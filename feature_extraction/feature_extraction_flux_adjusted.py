@@ -6,11 +6,11 @@ ID = 'object_id'
 target = 'target'
 
 def feature_extraction(df_meta, df):
-	# Adjust flux to magnitude, which equals to flux * photoz * photoz
-	df = df.merge(df_meta[[ID, 'distmod', 'hostgal_photoz']], on=ID, how='left')
-	df = df[df['distmod'].notnull()]
-	df['flux'] *= df['hostgal_photoz'] * df['hostgal_photoz']
-	df['flux_err'] *= df['hostgal_photoz'] * df['hostgal_photoz']
+    # Adjust flux to magnitude, which equals to flux * photoz * photoz
+    df = df.merge(df_meta[[ID, 'distmod', 'hostgal_photoz']], on=ID, how='left')
+    df = df[df['distmod'].notnull()]
+    df['flux'] *= df['hostgal_photoz'] * df['hostgal_photoz']
+    df['flux_err'] *= df['hostgal_photoz'] * df['hostgal_photoz']
 	
     passband_agg = aggregation(df, [ID, 'passband'])
     object_agg = aggregation(df, ID)
@@ -19,7 +19,7 @@ def feature_extraction(df_meta, df):
 if 'name' == 'main':
     train_meta = pd.read_csv('../input/training_set_metadata.csv')
     train = pd.read_csv('../input/training_set.csv')
-	train_passband_agg, train_object_agg = feature_extraction(train_meta, train)
+    train_passband_agg, train_object_agg = feature_extraction(train_meta, train)
     train_passband_agg.to_csv('train_passband_aggregation_flux_adjusted.csv', index=False)
     train_object_agg.to_csv('train_object_aggregation_flux_adjusted.csv', index=False)
 
