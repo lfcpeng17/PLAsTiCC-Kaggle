@@ -379,26 +379,23 @@ def aggregation(df, groupby_columns):
     
     return df_agg
 	
-def feature_extraction(df_meta_filepath, df_filepath, savefilepath_passband, savefilepath_object):
-	df_meta = pd.read_csv(df_meta_filepath)
-	df = pd.read_csv(df_filepath)
-	passband_agg = aggregation(df, [ID, 'passband'])
-	passband_agg = passband_agg.merge(df_meta[[ID, target]], on=ID, how='left')
-	passband_agg.to_csv(savefilepath_passband, index=False)
-	object_agg = aggregation(df, ID)
-	object_agg = df_meta.merge(object_agg, on=ID, how='left')
-	object_agg.to_csv(savefilepath_object, index=False)
+def feature_extraction(df_meta, df):
+    passband_agg = aggregation(df, [ID, 'passband'])
+    passband_agg = passband_agg.merge(df_meta[[ID, target]], on=ID, how='left')
+    object_agg = aggregation(df, ID)
+    object_agg = df_meta.merge(object_agg, on=ID, how='left')
+    
+    return passband_agg, object_agg
 
 if 'name' == 'main':
-	train_meta_filepath = '../input/training_set_metadata.csv'
-	train_filepath = '../input/training_set.csv'
-	train_passband_savefilepath = 'train_passband_aggregation.csv'
-	train_object_savefilepath = 'train_object_aggregation.csv'
-	
-	test_meta_filepath = '../input/test_set_metadata.csv'
-	test_filepath = '../input/test_set.csv'
-	test_passband_savefilepath = 'test_passband_aggregation.csv'
-	test_object_savefilepath = 'test_object_aggregation.csv'
-	
-	feature_extraction(train_meta_filepath, train_filepath, train_passband_savefilepath, train_object_savefilepath)
-	feature_extraction(test_meta_filepath, test_filepath, test_passband_savefilepath, test_object_savefilepath)
+    train_meta = pd.read_csv('../input/training_set_metadata.csv')
+    train = pd.read_csv('../input/training_set.csv')
+    train_passband_agg, train_object_agg = feature_extraction(train_meta, train)
+    train_passband_agg.to_csv('train_passband_aggregation.csv', index=False)
+    train_object_agg.to_csv('train_object_aggregation.csv', index=False)
+
+    test_meta = pd.read_csv('../input/test_set_metadata.csv')
+    test = pd.read_csv('../input/test_set.csv')
+    test_passband_agg, test_object_agg = feature_extraction(test_meta, test)
+    test_passband_agg.to_csv('test_passband_aggregation.csv', index=False)
+    test_object_agg.to_csv('test_object_aggregation.csv', index=False)
