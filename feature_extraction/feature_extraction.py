@@ -387,7 +387,7 @@ def feature_extraction(df_meta, df):
     
     return passband_agg, object_agg
 
-if 'name' == 'main':
+if __name__ == '__main__':
     train_meta = pd.read_csv('../input/training_set_metadata.csv')
     train = pd.read_csv('../input/training_set.csv')
     train_passband_agg, train_object_agg = feature_extraction(train_meta, train)
